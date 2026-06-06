@@ -1,0 +1,52 @@
+version: '3'
+
+tasks:
+  net:create:
+    desc: Create shared Docker network for films stack
+    cmds:
+      - docker network create ichub_films_net || true
+
+  up:
+    desc: "Поднять проект в Docker"
+    deps: [net:create]
+    cmds:
+      - docker compose up -d
+
+  down:
+    desc: "Остановить Docker контейнеры"
+    cmds:
+      - docker compose down
+
+  logs:
+    desc: "Посмотреть логи приложения"
+    cmds:
+      - docker compose logs -f app
+
+  db:migrate:
+    desc: "Применить миграции к базе данных"
+    cmds:
+      - docker compose exec app uv run alembic upgrade head
+
+  db:makemigration:
+    desc: "Создать миграцию к базе данных. Пример: task db:mm 'Add films table'"
+    cmds:
+      - docker compose exec app uv run alembic revision --autogenerate -m "{{.TASK_ARGS}}"
+    aliases: [db:mm]
+
+  db:seed:
+    desc: "Заполнить базу тестовыми данными"
+    cmds:
+      - docker compose exec app uv run python -m src.seeder
+
+  # init:
+  #   desc: "Инициализация проекта, создание окружения и установка FastAPI"
+  #   cmds:
+  #     - uv sync
+  #   silent: false
+  #
+  # dev:
+  #   desc: "Запуск FastAPI в режиме разработки (авто-релоад)"
+  #   deps: [init]
+  #   cmds:
+  #     - uv run fastapi dev src/main.py
+  #   silent: false

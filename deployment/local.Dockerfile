@@ -1,0 +1,28 @@
+FROM ghcr.io/astral-sh/uv:python3.13-alpine
+
+RUN addgroup -g 1000 dev && adduser -u 1000 -G dev -D dev
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN chown dev:dev /app
+
+USER dev
+
+# Копируем файлы зависимостей
+COPY --chown=dev:dev pyproject.toml uv.lock ./
+
+# Синхронизируем зависимости
+RUN uv sync --frozen --no-cache
+
+# Копируем остальной код
+COPY --chown=dev:dev src/ /app/src/
+
+# Добавляем пути к бинарникам окружения в PATH
+ENV PATH="/app/.venv/bin:$PATH"
+
+EXPOSE 8000
+
+CMD ["uv", "run", "fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
