@@ -1,0 +1,40 @@
+version: '3.8'
+
+networks:
+  ichub_films_net:
+    external: true
+
+volumes:
+  mongo_data:
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: films_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ichub_films_net
+
+  app:
+    build:
+      context: .
+      dockerfile: deployment/local.Dockerfile
+    container_name: app
+    working_dir: /app
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/app
+      - /app/.venv
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mongo
+    networks:
+      - ichub_films_net

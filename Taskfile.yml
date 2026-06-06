@@ -1,0 +1,43 @@
+version: '3'
+
+tasks:
+  net:create:
+    desc: Create shared Docker network for films stack
+    cmds:
+      - docker network create ichub_films_net || true
+
+  up:
+    desc: "Поднять проект в Docker"
+    deps: [net:create]
+    cmds:
+      - docker compose up -d
+
+  down:
+    desc: "Остановить Docker контейнеры"
+    cmds:
+      - docker compose down
+
+  logs:
+    desc: "Посмотреть логи приложения"
+    cmds:
+      - docker compose logs -f app
+
+  build:
+    desc: "Собрать Docker образ"
+    cmds:
+      - docker compose build
+
+  lint:
+    desc: "Проверка кода (ruff)"
+    cmds:
+      - uv run ruff check .
+
+  format:
+    desc: "Форматирование кода (ruff)"
+    cmds:
+      - uv run ruff format .
+
+  lint:fix:
+    desc: "Ruff с автоисправлением"
+    cmds:
+      - uv run ruff check --fix .
