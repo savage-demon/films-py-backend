@@ -2,8 +2,6 @@
 
 Read-only REST API каталога фильмов на FastAPI.
 
-Фронтенд: [films_frontend](../films_frontend/).
-
 ## Стек
 
 - Python 3.13, [uv](https://docs.astral.sh/uv/)
