@@ -32,6 +32,18 @@ tasks:
     cmds:
       - uv run ruff check .
 
+  test:
+    desc: "Запуск тестов (pytest)"
+    cmds:
+      - uv run pytest
+
+  check:
+    desc: "Полная проверка: lint, форматирование и тесты"
+    cmds:
+      - uv run ruff check .
+      - uv run ruff format . --check
+      - uv run pytest
+
   format:
     desc: "Форматирование кода (ruff)"
     cmds:

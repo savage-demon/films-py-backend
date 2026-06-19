@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   ichub_films_net:
     external: true

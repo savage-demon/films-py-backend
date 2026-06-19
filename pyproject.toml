@@ -1,7 +1,7 @@
 [project]
 name = "films"
 version = "0.1.0"
-description = "Add your description here"
+description = "Read-only REST API for viewing films from Sakila database"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -15,6 +15,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=8.0.0",
     "ruff>=0.11.0",
 ]
 
@@ -28,3 +29,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

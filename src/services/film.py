@@ -52,15 +52,22 @@ class FilmService:
         )
         min_length, max_length = length_result.one()
 
+        features_result = await self.db.execute(
+            select(Film.special_features)
+            .where(Film.special_features.is_not(None))
+            .where(Film.special_features != "")
+        )
+        all_features: set[str] = set()
+        for row in features_result.scalars().all():
+            for f in row.split(","):
+                stripped = f.strip()
+                if stripped:
+                    all_features.add(stripped)
+
         return {
             "genres": list(genres_result.scalars().all()),
             "ratings": list(ratings_result.scalars().all()),
-            "features": [
-                "Trailers",
-                "Commentaries",
-                "Deleted Scenes",
-                "Behind the Scenes",
-            ],
+            "features": sorted(all_features),
             "min_release_year": min_release_year,
             "max_release_year": max_release_year,
             "min_length": min_length,
