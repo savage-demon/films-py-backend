@@ -24,16 +24,16 @@ class PopularSearchService:
     def _normalize_keyword(keyword: str) -> str:
         return " ".join(keyword.strip().lower().split())
 
-    async def record(self, title: str) -> None:
+    async def record(self, keyword: str) -> None:
         if not self._enabled:
             return
 
-        display_title = " ".join(title.strip().split())
+        display_keyword = " ".join(keyword.strip().split())
 
-        if not display_title:
+        if not display_keyword:
             return
 
-        normalized = self._normalize_keyword(display_title)
+        normalized = self._normalize_keyword(display_keyword)
         now = datetime.now(UTC)
 
         await self._collection().update_one(
@@ -41,7 +41,7 @@ class PopularSearchService:
             {
                 "$inc": {"count": 1},
                 "$set": {
-                    "keyword": display_title,
+                    "keyword": display_keyword,
                     "last_searched_at": now,
                 },
                 "$setOnInsert": {"normalized": normalized},
@@ -50,10 +50,6 @@ class PopularSearchService:
         )
 
         await self._trim_store()
-
-    async def record_titles(self, titles: list[str]) -> None:
-        for title in titles:
-            await self.record(title)
 
     async def get_top(self, limit: int | None = None) -> list[dict[str, int | str]]:
         if not self._enabled:

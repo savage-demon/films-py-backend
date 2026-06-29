@@ -15,7 +15,7 @@ class FilmFilter(BaseModel):
     length_from: int | None = Field(default=None, ge=0)
     length_to: int | None = Field(default=None, ge=0)
 
-    order_by: Literal[
+    order_by: str | Literal[
         "title",
         "-title",
         "release_year",

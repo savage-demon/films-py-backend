@@ -1,4 +1,4 @@
-.PHONY: help env bootstrap net-create up down logs build lint format lint-fix
+.PHONY: help env bootstrap net-create up down logs build lint format lint-fix mongo-clear-searches
 
 .DEFAULT_GOAL := help
 
@@ -36,3 +36,6 @@ format: ## Форматирование кода (ruff)
 
 lint-fix: ## Ruff с автоисправлением
 	uv run ruff check --fix .
+
+mongo-clear-searches: ## Очистить поисковые запросы в MongoDB
+	docker compose exec -T app uv run python -m src.scripts.clear_popular_searches

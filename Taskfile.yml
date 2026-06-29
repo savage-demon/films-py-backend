@@ -40,9 +40,8 @@ tasks:
   check:
     desc: "Полная проверка: lint, форматирование и тесты"
     cmds:
-      - uv run ruff check .
-      - uv run ruff format . --check
-      - uv run pytest
+      - task: lint:fix
+      - task: test
 
   format:
     desc: "Форматирование кода (ruff)"
@@ -53,3 +52,8 @@ tasks:
     desc: "Ruff с автоисправлением"
     cmds:
       - uv run ruff check --fix .
+
+  mongo:clear-searches:
+    desc: "Очистить поисковые запросы в MongoDB"
+    cmds:
+      - docker compose exec -T app uv run python -m src.scripts.clear_popular_searches

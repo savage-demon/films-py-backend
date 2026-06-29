@@ -67,7 +67,7 @@ async def get_popular_searches(
     popular_search_service: Annotated[
         PopularSearchService, Depends(get_popular_search_service)
     ],
-    limit: Annotated[int, Query(ge=1, le=20)] = 5,
+    limit: Annotated[int, Query(ge=1, le=100)] = 5,
 ):
     items = await popular_search_service.get_top(limit=limit)
 
@@ -88,9 +88,8 @@ async def get_films(
 
     search_query = (filter.keyword or filter.title or "").strip()
 
-    if search_query and page == 1 and result["total"] > 0:
-        found_titles = [film.title for film in result["items"] if film.title]
-        await popular_search_service.record_titles(found_titles)
+    if search_query and page == 1:
+        await popular_search_service.record(search_query)
 
     return result
 
